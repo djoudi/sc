@@ -185,7 +185,7 @@
         <div class="mini-stat"><div class="n mono" id="statPh2">0/9</div><div class="l">أنواع التصيد</div></div>
         <div class="mini-stat"><div class="n mono" id="statSoc2">0/6</div><div class="l">الشبكات الاجتماعية</div></div>
         <div class="mini-stat"><div class="n mono" id="statDesk">0/8</div><div class="l">المكتب النظيف</div></div>
-        <div class="mini-stat"><div class="n mono" id="statData">0/10</div><div class="l">تصنيف البيانات</div></div>
+        <div class="mini-stat"><div class="n mono" id="statData">0/14</div><div class="l">تصنيف البيانات</div></div>
       </div>
       <div class="start-list">
         <button class="start-btn" data-goto="malware"><div><div class="t">🦠 البرمجيات الضارة</div><div class="d">فيروس، دودة، حصان طروادة، أم برنامج فدية؟</div></div><span class="chev">←</span></button>
@@ -255,21 +255,22 @@
   <!-- ===================== DATA CLASSIFICATION ===================== -->
   <section class="panel" id="panel-data">
     <div class="card">
-      <span class="eyebrow">مفهوم أساسي</span>
+      <span class="eyebrow">مفهوم أساسي — أربعة مستويات</span>
       <h2 style="margin-top:0;font-size:16px;">🗂️ تصنيف البيانات وبروتوكول TLP</h2>
-      <button class="explain-toggle" id="dataToggle"><span class="arrow">▾</span> عرض/إخفاء تعريف الفئات</button>
-      <div class="exp-grid cols3" id="dataGrid">
-        <div class="exp-box"><span class="ic">🔴</span><div class="t">سرية</div><div class="d">سجلات مالية، صحية، وكلمات مرور.</div></div>
-        <div class="exp-box"><span class="ic">🟠</span><div class="t">داخلية</div><div class="d">تقارير وخطط عمل، لا تُشارك خارج المؤسسة.</div></div>
-        <div class="exp-box"><span class="ic">⚪</span><div class="t">عامة</div><div class="d">منشورات إعلامية وبيانات مفتوحة.</div></div>
+      <button class="explain-toggle" id="dataToggle"><span class="arrow">▾</span> عرض/إخفاء تعريف المستويات</button>
+      <div class="exp-grid" id="dataGrid">
+        <div class="exp-box"><span class="ic">🟢</span><div class="t">عامة (Public)</div><div class="d">يمكن نشرها للجميع دون أي قيود.</div></div>
+        <div class="exp-box"><span class="ic">🔵</span><div class="t">داخلية (Internal)</div><div class="d">للاستخدام داخل المؤسسة فقط.</div></div>
+        <div class="exp-box"><span class="ic">🟠</span><div class="t">سرية (Confidential)</div><div class="d">يقتصر الوصول عليها على المخوَّلين فقط.</div></div>
+        <div class="exp-box"><span class="ic">🔴</span><div class="t">سرية جدًا (Restricted)</div><div class="d">أعلى مستوى حماية داخل المؤسسة.</div></div>
       </div>
-      <div class="mod-head"><h2 style="font-size:15px;">١) صنّف نوع البيانة</h2><div class="progress-track"><div class="progress-fill" id="dataProgress"></div></div><div class="counter" id="dataCounter">1 / 6</div></div>
+      <div class="mod-head"><h2 style="font-size:15px;">١) صنّف نوع البيانة</h2><div class="progress-track"><div class="progress-fill" id="dataProgress"></div></div><div class="counter" id="dataCounter">1 / 10</div></div>
       <div id="dataStage"></div>
     </div>
     <div class="card">
-      <span class="eyebrow">بروتوكول دولي</span>
+      <span class="eyebrow">بروتوكول دولي — TLP 2.0</span>
       <h2 style="margin-top:0;font-size:15px;">٢) بروتوكول الإشارة الضوئية TLP — بأي لون تُشارك؟</h2>
-      <div class="mod-head"><h2 style="font-size:13px;color:var(--text-dim);">أحمر = للمستلم فقط · برتقالي = داخل المؤسسة · أخضر = مع القطاع الأمني · أبيض = بلا قيود</h2><div class="progress-track"><div class="progress-fill" id="tlpProgress"></div></div><div class="counter" id="tlpCounter">1 / 4</div></div>
+      <div class="mod-head"><h2 style="font-size:13px;color:var(--text-dim);">أحمر = للمستلم فقط · برتقالي = داخل المؤسسة · أخضر = مع القطاع الأمني · Clear = بلا قيود</h2><div class="progress-track"><div class="progress-fill" id="tlpProgress"></div></div><div class="counter" id="tlpCounter">1 / 4</div></div>
       <div id="tlpStage"></div>
     </div>
   </section>
@@ -387,23 +388,27 @@ const DESK_ITEMS = [
   { s:"اللوحة البيضاء التي كُتبت عليها معلومات حساسة أثناء الاجتماع تُمسَح فور انتهائه.", v:false, e:"مسح اللوحات البيضاء بعد الاستخدام يمنع تسرب معلومات حساسة للزوار لاحقًا." },
 ];
 
-const DATA_CATS = [ {key:"secret", label:"🔴 سرية"}, {key:"internal", label:"🟠 داخلية"}, {key:"public", label:"⚪ عامة"} ];
+const DATA_CATS = [ {key:"public", label:"🟢 عامة"}, {key:"internal", label:"🔵 داخلية"}, {key:"confidential", label:"🟠 سرية"}, {key:"restricted", label:"🔴 سرية جدًا"} ];
 const DATA_ITEMS = [
-  { s:"كلمات المرور وأرقام الحسابات البنكية للموظفين.", c:"secret", e:"معلومات حساسة يمكن أن تُستغل مباشرة — تُصنَّف سرية." },
-  { s:"خطط العمل السنوية والتقارير الداخلية للإدارة.", c:"internal", e:"خاصة بالمؤسسة ولا تُشارك مع الجمهور، لكنها ليست بحساسية السجلات المالية — داخلية." },
-  { s:"منشور إعلامي رسمي عن فعالية عامة للمؤسسة.", c:"public", e:"يمكن مشاركته دون أي مخاطر — بيانات عامة." },
-  { s:"السجلات الصحية الشخصية للموظفين.", c:"secret", e:"بيانات صحية شخصية حساسة جدًا — تُصنَّف سرية دائمًا." },
-  { s:"نتائج أبحاث داخلية لم تُنشر بعد رسميًا.", c:"internal", e:"معلومات خاصة بالمؤسسة قبل نشرها الرسمي — تصنَّف داخلية." },
-  { s:"كتيّب تعريفي عام عن خدمات المؤسسة موجَّه للجمهور.", c:"public", e:"مُعَد أصلًا للتوزيع العام — بيانات عامة." },
+  { s:"الموقع الإلكتروني الرسمي للمؤسسة.", c:"public", e:"محتوى موجَّه للجميع دون أي قيود — عامة (Public)." },
+  { s:"الإعلانات الرسمية الموجَّهة للجمهور.", c:"public", e:"مُعَدة أصلًا للنشر العام — عامة (Public)." },
+  { s:"دليل الهاتف الداخلي للمؤسسة.", c:"internal", e:"يُستخدم داخل المؤسسة فقط ولا يُنشر خارجها — داخلية (Internal)." },
+  { s:"محاضر الاجتماعات الداخلية.", c:"internal", e:"معلومات تنظيمية للاستخدام الداخلي فقط — داخلية (Internal)." },
+  { s:"ملفات الموظفين (الاسم، العنوان، الراتب، الحالة الاجتماعية).", c:"confidential", e:"بيانات شخصية يقتصر الوصول إليها على المخوَّلين — سرية (Confidential)." },
+  { s:"كشوف الرواتب.", c:"confidential", e:"معلومات مالية حساسة يقتصر الاطلاع عليها على جهات محددة — سرية (Confidential)." },
+  { s:"العقود قبل الإعلان الرسمي عنها.", c:"confidential", e:"معلومة حساسة قبل نشرها رسميًا — سرية (Confidential)." },
+  { s:"كلمات المرور الخاصة بحسابات النظام.", c:"restricted", e:"يمكن أن يؤدي كشفها لاختراق كامل — أعلى مستوى حماية: سرية جدًا (Restricted)." },
+  { s:"مفاتيح التشفير المستخدمة لحماية البيانات.", c:"restricted", e:"عنصر أساسي في منظومة الحماية بأكملها — سرية جدًا (Restricted)." },
+  { s:"النسخ الاحتياطية لقواعد بيانات المؤسسة.", c:"restricted", e:"تحتوي كل البيانات الحساسة مجتمعة في مكان واحد — سرية جدًا (Restricted)." },
 ];
 
 const TLP_ITEMS = [
   { s:"معلومة حساسة جدًا تخص فقط الشخص المستلم، ولا يجوز مشاركتها مع أي طرف آخر مهما كان.", c:"red", e:"TLP:RED مخصص للمستلم فقط دون أي مشاركة إضافية." },
-  { s:"تقرير أمني داخلي يمكن مشاركته فقط مع من له علاقة مباشرة باتخاذ إجراء بشأنه داخل المؤسسة.", c:"amber", e:"TLP:AMBER يسمح بالمشاركة داخل المؤسسة أو مع المعنيين مباشرة بالإجراء." },
-  { s:"تحذير أمني عام يمكن تعميمه على مؤسسات أخرى ضمن نفس القطاع أو المجتمع الأمني.", c:"green", e:"TLP:GREEN يسمح بالمشاركة مع أطراف ضمن نفس القطاع أو المجتمع الأمني." },
-  { s:"بيان صحفي أو منشور عام لا توجد أي قيود على تداوله.", c:"white", e:"TLP:WHITE يعني معلومة غير محدودة التداول." },
+  { s:"تقرير أمني داخلي يمكن مشاركته فقط مع من له علاقة مباشرة باتخاذ إجراء بشأنه داخل المؤسسة.", c:"amber", e:"TLP:AMBER يسمح بالمشاركة داخل المؤسسة أو مع فريق محدد." },
+  { s:"تحذير أمني عام يمكن تعميمه على مؤسسات أخرى ضمن نفس القطاع أو المجتمع الأمني.", c:"green", e:"TLP:GREEN يسمح بالمشاركة مع جهات موثوقة ضمن نفس القطاع." },
+  { s:"بيان صحفي أو منشور عام لا توجد أي قيود على تداوله.", c:"clear", e:"TLP:CLEAR (النسخة المحدَّثة من TLP 2.0) يعني معلومة يمكن نشرها للجميع." },
 ];
-const TLP_CATS = [ {key:"red", label:"🔴 أحمر"}, {key:"amber", label:"🟠 برتقالي"}, {key:"green", label:"🟢 أخضر"}, {key:"white", label:"⚪ أبيض"} ];
+const TLP_CATS = [ {key:"red", label:"🔴 أحمر"}, {key:"amber", label:"🟠 برتقالي"}, {key:"green", label:"🟢 أخضر"}, {key:"clear", label:"⚪ Clear"} ];
 
 /* ============ STATE ============ */
 const KEY = "cyberSimPlatform2_v1";
