@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>منصة المحاور الإضافية — الأمن السيبراني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1420; --surface:#111D30; --surface-2:#17253C; --surface-3:#1E2E48;
+    --border-solid:#2A3B58; --text:#E9EEF7; --text-dim:#8FA1BE; --text-faint:#5E7192;
+    --amber:#F2B134; --amber-soft:#FFD98E; --teal:#2FD9C4; --sky:#38BDF8;
+    --pink:#F472B6; --red:#F0546B; --violet:#A78BFA;
+    --shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;}
+  body{
+    background:
+      radial-gradient(1100px 500px at 85% -10%, #142236 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, #10233020 0%, transparent 55%),
+      var(--bg);
+    color:var(--text); font-family:'Tajawal', sans-serif;
+    height:100vh; height:100dvh; line-height:1.55;
+    display:flex; justify-content:center; overscroll-behavior:none;
+  }
+  h1,h2,h3{ font-family:'Cairo', sans-serif; }
+  .mono{ font-family:'JetBrains Mono', monospace; direction:ltr; unicode-bidi:isolate; }
+
+  .shell{ width:100%; max-width:920px; height:100%; display:flex; flex-direction:column; padding:14px 18px 8px; min-height:0; }
+
+  header.top{ display:flex; align-items:center; gap:10px; margin-bottom:10px; flex:0 0 auto; }
+  .mark{ width:34px; height:34px; flex:0 0 auto; }
+  .brand-title{ font-size:11.5px; color:var(--text-dim); }
+  .brand-sub{ font-size:17px; font-weight:800; }
+  .brand-sub span{ color:var(--amber); }
+
+  nav.tabs{ display:flex; gap:4px; overflow-x:auto; padding-bottom:3px; border-bottom:1px solid var(--border-solid); margin-bottom:12px; flex:0 0 auto; scrollbar-width:thin; }
+  nav.tabs button{ all:unset; cursor:pointer; white-space:nowrap; padding:8px 12px; border-radius:9px 9px 0 0; font-family:'Cairo',sans-serif; font-weight:700; font-size:12.5px; color:var(--text-dim); border-bottom:3px solid transparent; transition:.15s; }
+  nav.tabs button:hover{ color:var(--text); background:var(--surface); }
+  nav.tabs button.active{ color:var(--amber-soft); border-bottom-color:var(--amber); background:var(--surface); }
+
+  .content-scroll{ flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding-bottom:4px; }
+
+  .panel{ display:none; animation:fade .2s ease; }
+  .panel.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .card{ background:linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%); border:1px solid var(--border-solid); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow); margin-bottom:12px; }
+  .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.3px; color:var(--amber); text-transform:uppercase; margin-bottom:6px; display:block; }
+
+  .hero{ text-align:center; padding:4px 6px 2px; }
+  .hero h1{ font-size:22px; margin:4px 0 8px; }
+  .hero p{ color:var(--text-dim); max-width:520px; margin:0 auto; font-size:13.5px; }
+
+  .gauge-wrap{ display:flex; justify-content:center; margin:14px 0 4px; }
+  .gauge-wrap svg{ width:140px; height:86px; }
+  .gauge-num{ font-size:32px; font-weight:700; }
+  .gauge-label{ font-size:11.5px; color:var(--text-dim); }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px; margin-top:12px; }
+  .mini-stat{ background:var(--surface-3); border:1px solid var(--border-solid); border-radius:10px; padding:9px 6px; text-align:center; }
+  .mini-stat .n{ font-size:18px; font-weight:700; font-family:'JetBrains Mono',monospace; }
+  .mini-stat .l{ font-size:10.5px; color:var(--text-dim); margin-top:1px; line-height:1.3; }
+
+  .start-list{ display:flex; flex-direction:column; gap:7px; margin-top:12px; }
+  .start-btn{ all:unset; cursor:pointer; display:flex; align-items:center; justify-content:space-between; background:var(--surface-3); border:1px solid var(--border-solid); border-radius:10px; padding:10px 14px; transition:.15s; }
+  .start-btn:hover{ border-color:var(--amber); transform:translateX(-2px); }
+  .start-btn .t{ font-family:'Cairo',sans-serif; font-weight:700; font-size:13px; }
+  .start-btn .d{ font-size:11px; color:var(--text-dim); margin-top:1px; }
+  .chev{ color:var(--amber); font-size:16px; }
+
+  .mod-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px; }
+  .mod-head h2{ font-size:16px; margin:0; }
+  .progress-track{ flex:1; min-width:90px; height:5px; background:var(--surface-3); border-radius:6px; overflow:hidden; margin:0 10px; }
+  .progress-fill{ height:100%; background:linear-gradient(90deg,var(--amber),var(--teal)); width:0%; transition:width .4s; }
+  .counter{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-dim); direction:ltr; unicode-bidi:isolate; }
+
+  .scn-setup{ background:#0C1725; border-radius:10px; padding:11px 14px; font-size:12.5px; color:var(--text-dim); margin-bottom:10px; }
+
+  .explain-toggle{ all:unset; cursor:pointer; display:flex; align-items:center; gap:6px; margin-bottom:10px; font-family:'Cairo',sans-serif; font-weight:700; font-size:12px; color:var(--text-dim); border:1px dashed var(--border-solid); border-radius:9px; padding:7px 12px; width:fit-content; }
+  .explain-toggle:hover{ color:var(--text); border-color:var(--amber); }
+  .explain-toggle .arrow{ transition:.2s; font-size:10px; }
+  .explain-toggle.open .arrow{ transform:rotate(180deg); }
+  .exp-grid{ display:none; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:12px; }
+  .exp-grid.open{ display:grid; }
+  .exp-grid.cols3{ grid-template-columns:repeat(3,1fr); }
+  @media (max-width:680px){ .exp-grid, .exp-grid.cols3{grid-template-columns:1fr;} }
+  .exp-box{ background:var(--surface-3); border:1px solid var(--border-solid); border-radius:11px; padding:10px 12px; }
+  .exp-box .ic{ font-size:18px; margin-bottom:3px; display:block; }
+  .exp-box .t{ font-family:'Cairo',sans-serif; font-weight:800; font-size:12.5px; margin-bottom:2px; }
+  .exp-box .d{ font-size:11.5px; color:var(--text-dim); }
+
+  .cat-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .cat-btn{ all:unset; cursor:pointer; flex:1; min-width:110px; text-align:center; padding:10px 8px; border-radius:10px; border:2px solid var(--border-solid); background:var(--surface-3); font-family:'Cairo',sans-serif; font-weight:700; font-size:12px; transition:.15s; }
+  .cat-btn:hover{ border-color:var(--amber-soft); }
+  .cat-btn.correct-pick{ border-color:var(--teal); background:#0f2a2530; }
+  .cat-btn.wrong-pick{ border-color:var(--red); background:#2a141d30; }
+  .cat-btn:disabled{ cursor:default; }
+
+  .feedback{ margin-top:10px; padding:11px 14px; border-radius:11px; font-size:13px; display:none; }
+  .feedback.show{ display:block; animation:fade .25s ease; }
+  .feedback.correct{ background:#0f2a2530; border:1px solid var(--teal); }
+  .feedback.wrong{ background:#2a141d30; border:1px solid var(--red); }
+  .feedback .tag{ font-family:'Cairo',sans-serif; font-weight:800; font-size:12px; margin-bottom:4px; display:block; }
+
+  .nextbar{ display:flex; justify-content:flex-end; margin-top:10px; }
+  .next-btn{ all:unset; cursor:pointer; background:var(--amber); color:#1a1200; font-family:'Cairo',sans-serif; font-weight:800; padding:8px 18px; border-radius:9px; font-size:12.5px; display:none; }
+  .next-btn.show{ display:inline-block; }
+
+  .bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .bar-label{ width:130px; font-size:11.5px; color:var(--text-dim); flex:0 0 auto; }
+  .bar-track{ flex:1; height:8px; background:var(--surface-3); border-radius:6px; overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:6px; transition:width .5s; }
+  .bar-val{ width:38px; text-align:left; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-dim); }
+
+  .reset-row{ text-align:center; margin-top:14px; }
+  .reset-btn{ all:unset; cursor:pointer; color:var(--text-faint); font-size:11px; text-decoration:underline; }
+  .reset-btn:hover{ color:var(--red); }
+
+  footer{ text-align:center; color:var(--text-faint); font-size:10px; flex:0 0 auto; padding:6px 0 2px; line-height:1.4; }
+
+  @media (max-height:900px){
+    .hero p{ display:none; }
+    .gauge-wrap{ margin:8px 0 2px; }
+    .gauge-wrap svg{ width:110px; height:68px; }
+    .gauge-num{ font-size:26px; }
+    .stat-grid{ margin-top:8px; gap:6px; }
+    .mini-stat{ padding:6px 4px; }
+    .start-list{ margin-top:8px; gap:5px; }
+    .start-btn{ padding:8px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <svg class="mark" viewBox="0 0 48 48" fill="none">
+      <path d="M24 4 L42 11 V22 C42 33 34.5 40.5 24 44 C13.5 40.5 6 33 6 22 V11 Z" fill="#17253C" stroke="#F2B134" stroke-width="2"/>
+      <path d="M18 24 C18 24 20 30 24 30 C29 30 33 24 33 18" stroke="#2FD9C4" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <circle cx="33" cy="18" r="2.6" fill="#F2B134"/>
+    </svg>
+    <div>
+      <div class="brand-title">منصة محاور إضافية</div>
+      <div class="brand-sub">دورة <span>الأمن السيبراني</span></div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="home" class="active">الرئيسية</button>
+    <button data-tab="malware">البرمجيات الضارة</button>
+    <button data-tab="phish2">أنواع التصيد</button>
+    <button data-tab="social">الشبكات الاجتماعية</button>
+    <button data-tab="desk">المكتب النظيف</button>
+    <button data-tab="data">تصنيف البيانات</button>
+    <button data-tab="results">نتائجي</button>
+  </nav>
+
+  <div class="content-scroll" id="contentScroll">
+  <!-- ===================== HOME ===================== -->
+  <section class="panel active" id="panel-home">
+    <div class="card hero">
+      <span class="eyebrow">تمرين ذاتي — بلا تسجيل ولا تقييم إداري</span>
+      <h1>محاور إضافية للدورة</h1>
+      <p>خمس وحدات قصيرة: البرمجيات الضارة، أنواع التصيد الموسّعة، الشبكات الاجتماعية، المكتب النظيف، وتصنيف البيانات. جرّبها بترتيبك الخاص.</p>
+      <div class="gauge-wrap">
+        <svg width="180" height="110" viewBox="0 0 180 110">
+          <path d="M15 100 A75 75 0 0 1 165 100" fill="none" stroke="#1E2E48" stroke-width="14" stroke-linecap="round"/>
+          <path id="gaugeArc" d="M15 100 A75 75 0 0 1 165 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="235" stroke-dashoffset="235"/>
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#F0546B"/><stop offset="55%" stop-color="#F2B134"/><stop offset="100%" stop-color="#2FD9C4"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div style="margin-top:-58px;">
+        <div class="gauge-num mono" id="homeGaugeNum">0%</div>
+        <div class="gauge-label">مؤشر اليقظة الإجمالي</div>
+      </div>
+      <div class="stat-grid">
+        <div class="mini-stat"><div class="n mono" id="statMal">0/6</div><div class="l">البرمجيات الضارة</div></div>
+        <div class="mini-stat"><div class="n mono" id="statPh2">0/9</div><div class="l">أنواع التصيد</div></div>
+        <div class="mini-stat"><div class="n mono" id="statSoc2">0/6</div><div class="l">الشبكات الاجتماعية</div></div>
+        <div class="mini-stat"><div class="n mono" id="statDesk">0/8</div><div class="l">المكتب النظيف</div></div>
+        <div class="mini-stat"><div class="n mono" id="statData">0/10</div><div class="l">تصنيف البيانات</div></div>
+      </div>
+      <div class="start-list">
+        <button class="start-btn" data-goto="malware"><div><div class="t">🦠 البرمجيات الضارة</div><div class="d">فيروس، دودة، حصان طروادة، أم برنامج فدية؟</div></div><span class="chev">←</span></button>
+        <button class="start-btn" data-goto="phish2"><div><div class="t">🎣 أنواع التصيد الموسّعة</div><div class="d">9 أنواع تصيد — صنّف كل موقف بدقة</div></div><span class="chev">←</span></button>
+        <button class="start-btn" data-goto="social"><div><div class="t">📱 الشبكات الاجتماعية</div><div class="d">ماذا تفعل في كل موقف؟</div></div><span class="chev">←</span></button>
+        <button class="start-btn" data-goto="desk"><div><div class="t">🧹 المكتب النظيف</div><div class="d">مخالفة أم التزام بالمبدأ؟</div></div><span class="chev">←</span></button>
+        <button class="start-btn" data-goto="data"><div><div class="t">🗂️ تصنيف البيانات و TLP</div><div class="d">صنّف نوع البيانة ولون بروتوكول TLP</div></div><span class="chev">←</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MALWARE ===================== -->
+  <section class="panel" id="panel-malware">
+    <div class="card">
+      <span class="eyebrow">مفهوم أساسي</span>
+      <h2 style="margin-top:0;font-size:16px;">🦠 أنواع البرمجيات الضارة</h2>
+      <button class="explain-toggle" id="malToggle"><span class="arrow">▾</span> عرض/إخفاء تعريف الأنواع</button>
+      <div class="exp-grid" id="malGrid">
+        <div class="exp-box"><span class="ic">🦠</span><div class="t">الفيروس (Virus)</div><div class="d">مستنسخ لنفسه، لا ينتقل ذاتيًا، ينتشر عبر البريد ووسائط التخزين.</div></div>
+        <div class="exp-box"><span class="ic">🪱</span><div class="t">الدودة (Worm)</div><div class="d">تنتقل عبر الشبكة تلقائيًا دون تدخل المستخدم، تستهلك الموارد.</div></div>
+        <div class="exp-box"><span class="ic">🐴</span><div class="t">حصان طروادة (Trojan)</div><div class="d">يتظاهر ببرنامج عادي، يفتح بابًا خلفيًا للمخترق.</div></div>
+        <div class="exp-box"><span class="ic">🔒</span><div class="t">برامج الفدية (Ransomware)</div><div class="d">تشفّر الملفات وتطلب فدية مالية لاسترجاعها.</div></div>
+      </div>
+      <div class="mod-head"><h2 style="font-size:15px;">صنّف كل حالة</h2><div class="progress-track"><div class="progress-fill" id="malProgress"></div></div><div class="counter" id="malCounter">1 / 6</div></div>
+      <div id="malStage"></div>
+    </div>
+  </section>
+
+  <!-- ===================== PHISHING TYPES ===================== -->
+  <section class="panel" id="panel-phish2">
+    <div class="card">
+      <span class="eyebrow">مفهوم أساسي</span>
+      <h2 style="margin-top:0;font-size:16px;">🎣 أنواع التصيد الإلكتروني</h2>
+      <button class="explain-toggle" id="ph2Toggle"><span class="arrow">▾</span> عرض/إخفاء تعريف الأنواع</button>
+      <div class="exp-grid cols3" id="ph2Grid">
+        <div class="exp-box"><span class="ic">✉️</span><div class="t">عام (Phishing)</div><div class="d">رسائل جماعية غير مخصَّصة لآلاف المستخدمين.</div></div>
+        <div class="exp-box"><span class="ic">🎯</span><div class="t">موجّه (Spear)</div><div class="d">يستهدف شخصًا بعينه بعد جمع معلومات عنه.</div></div>
+        <div class="exp-box"><span class="ic">🐋</span><div class="t">تصيد المدراء (Whaling)</div><div class="d">يستهدف كبار المسؤولين بأسلوب رسمي دقيق.</div></div>
+        <div class="exp-box"><span class="ic">📞</span><div class="t">صوتي (Vishing)</div><div class="d">مكالمة هاتفية تنتحل صفة جهة رسمية.</div></div>
+        <div class="exp-box"><span class="ic">📩</span><div class="t">عبر الرسائل (Smishing)</div><div class="d">رسائل SMS تحتوي روابط أو جوائز وهمية.</div></div>
+        <div class="exp-box"><span class="ic">🔲</span><div class="t">عبر QR (Quishing)</div><div class="d">رمز QR يُخفي رابطًا حقيقيًا مزيفًا.</div></div>
+        <div class="exp-box"><span class="ic">👥</span><div class="t">شبكات التواصل</div><div class="d">حسابات مزيفة على فيسبوك، لينكدإن، واتساب.</div></div>
+        <div class="exp-box"><span class="ic">🤖</span><div class="t">بالذكاء الاصطناعي</div><div class="d">استنساخ صوت أو Deepfake لتقليد شخص موثوق.</div></div>
+        <div class="exp-box"><span class="ic">🔑</span><div class="t">عبر OAuth</div><div class="d">خداع لمنح تطبيق صلاحيات الوصول دون سرقة كلمة المرور.</div></div>
+      </div>
+      <div class="mod-head"><h2 style="font-size:15px;">صنّف كل موقف</h2><div class="progress-track"><div class="progress-fill" id="ph2Progress"></div></div><div class="counter" id="ph2Counter">1 / 9</div></div>
+      <div id="ph2Stage"></div>
+    </div>
+  </section>
+
+  <!-- ===================== SOCIAL ===================== -->
+  <section class="panel" id="panel-social">
+    <div class="card">
+      <div class="mod-head"><h2>📱 الشبكات الاجتماعية</h2><div class="progress-track"><div class="progress-fill" id="socProgress"></div></div><div class="counter" id="socCounter">1 / 6</div></div>
+      <div id="socStage"></div>
+    </div>
+  </section>
+
+  <!-- ===================== CLEAN DESK ===================== -->
+  <section class="panel" id="panel-desk">
+    <div class="card">
+      <div class="mod-head"><h2>🧹 المكتب النظيف</h2><div class="progress-track"><div class="progress-fill" id="deskProgress"></div></div><div class="counter" id="deskCounter">1 / 8</div></div>
+      <div id="deskStage"></div>
+    </div>
+  </section>
+
+  <!-- ===================== DATA CLASSIFICATION ===================== -->
+  <section class="panel" id="panel-data">
+    <div class="card">
+      <span class="eyebrow">مفهوم أساسي</span>
+      <h2 style="margin-top:0;font-size:16px;">🗂️ تصنيف البيانات وبروتوكول TLP</h2>
+      <button class="explain-toggle" id="dataToggle"><span class="arrow">▾</span> عرض/إخفاء تعريف الفئات</button>
+      <div class="exp-grid cols3" id="dataGrid">
+        <div class="exp-box"><span class="ic">🔴</span><div class="t">سرية</div><div class="d">سجلات مالية، صحية، وكلمات مرور.</div></div>
+        <div class="exp-box"><span class="ic">🟠</span><div class="t">داخلية</div><div class="d">تقارير وخطط عمل، لا تُشارك خارج المؤسسة.</div></div>
+        <div class="exp-box"><span class="ic">⚪</span><div class="t">عامة</div><div class="d">منشورات إعلامية وبيانات مفتوحة.</div></div>
+      </div>
+      <div class="mod-head"><h2 style="font-size:15px;">١) صنّف نوع البيانة</h2><div class="progress-track"><div class="progress-fill" id="dataProgress"></div></div><div class="counter" id="dataCounter">1 / 6</div></div>
+      <div id="dataStage"></div>
+    </div>
+    <div class="card">
+      <span class="eyebrow">بروتوكول دولي</span>
+      <h2 style="margin-top:0;font-size:15px;">٢) بروتوكول الإشارة الضوئية TLP — بأي لون تُشارك؟</h2>
+      <div class="mod-head"><h2 style="font-size:13px;color:var(--text-dim);">أحمر = للمستلم فقط · برتقالي = داخل المؤسسة · أخضر = مع القطاع الأمني · أبيض = بلا قيود</h2><div class="progress-track"><div class="progress-fill" id="tlpProgress"></div></div><div class="counter" id="tlpCounter">1 / 4</div></div>
+      <div id="tlpStage"></div>
+    </div>
+  </section>
+
+  <!-- ===================== RESULTS ===================== -->
+  <section class="panel" id="panel-results">
+    <div class="card">
+      <span class="eyebrow">ملخص الأداء</span>
+      <h2 style="margin-top:0;">نتائجي</h2>
+      <div class="gauge-wrap">
+        <svg width="180" height="110" viewBox="0 0 180 110">
+          <path d="M15 100 A75 75 0 0 1 165 100" fill="none" stroke="#1E2E48" stroke-width="14" stroke-linecap="round"/>
+          <path id="gaugeArc2" d="M15 100 A75 75 0 0 1 165 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="235" stroke-dashoffset="235"/>
+        </svg>
+      </div>
+      <div style="text-align:center; margin-top:-58px;">
+        <div class="gauge-num mono" id="resGaugeNum">0%</div>
+        <div class="gauge-label" id="resMsg">ابدأ بإحدى الوحدات لبناء مؤشرك</div>
+      </div>
+      <div style="margin-top:20px;">
+        <div class="bar-row"><div class="bar-label">البرمجيات الضارة</div><div class="bar-track"><div class="bar-fill" id="barMal" style="width:0%; background:var(--red);"></div></div><div class="bar-val mono" id="barMalVal">0%</div></div>
+        <div class="bar-row"><div class="bar-label">أنواع التصيد</div><div class="bar-track"><div class="bar-fill" id="barPh2" style="width:0%; background:var(--amber);"></div></div><div class="bar-val mono" id="barPh2Val">0%</div></div>
+        <div class="bar-row"><div class="bar-label">الشبكات الاجتماعية</div><div class="bar-track"><div class="bar-fill" id="barSoc2" style="width:0%; background:var(--sky);"></div></div><div class="bar-val mono" id="barSoc2Val">0%</div></div>
+        <div class="bar-row"><div class="bar-label">المكتب النظيف</div><div class="bar-track"><div class="bar-fill" id="barDesk" style="width:0%; background:var(--teal);"></div></div><div class="bar-val mono" id="barDeskVal">0%</div></div>
+        <div class="bar-row"><div class="bar-label">تصنيف البيانات</div><div class="bar-track"><div class="bar-fill" id="barData" style="width:0%; background:var(--violet);"></div></div><div class="bar-val mono" id="barDataVal">0%</div></div>
+        <div class="bar-row"><div class="bar-label">TLP</div><div class="bar-track"><div class="bar-fill" id="barTlp" style="width:0%; background:var(--pink);"></div></div><div class="bar-val mono" id="barTlpVal">0%</div></div>
+      </div>
+      <div class="reset-row"><button class="reset-btn" id="resetBtn">إعادة تعيين كل النتائج والبدء من جديد</button></div>
+    </div>
+  </section>
+  </div>
+
+  <footer>أداة تدريب ذاتي — بلا بيانات مُرسَلة خارج الجهاز · تطوير: الأستاذ جودي عبد الوهاب</footer>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const MAL_CATS = [
+  {key:"virus", label:"🦠 فيروس"}, {key:"worm", label:"🪱 دودة"},
+  {key:"trojan", label:"🐴 حصان طروادة"}, {key:"ransom", label:"🔒 برنامج فدية"},
+];
+const MAL_ITEMS = [
+  { s:"برنامج ينتشر داخل الشبكة الداخلية تلقائيًا دون أي تدخل من المستخدم، ويؤدي إلى استهلاك موارد الجهاز والشبكة بالكامل.", c:"worm", e:"الانتقال الذاتي عبر الشبكة دون تدخل المستخدم هو الخاصية المميزة للدودة." },
+  { s:"تطبيق مجاني لتحويل الملفات يبدو عاديًا تمامًا، لكنه بعد التثبيت يفتح بابًا خلفيًا يتيح للمخترق الدخول للجهاز.", c:"trojan", e:"التظاهر ببرنامج عادي مع إخفاء غرض تخريبي هو تعريف حصان طروادة بالضبط." },
+  { s:"ملف مرفق بالبريد الإلكتروني عند فتحه يُتلف الملفات المجاورة وينتقل عبر وسائط التخزين الخارجية، لكنه لا ينتقل عبر الشبكة من تلقاء نفسه.", c:"virus", e:"الانتشار عبر البريد والوسائط الخارجية دون قدرة انتقال ذاتي عبر الشبكة هو سلوك الفيروس." },
+  { s:"بعد تحميل برنامج من موقع غير موثوق، تُشفَّر جميع ملفات الجهاز فجأة وتظهر رسالة تطلب دفع مبلغ مالي عبر بيتكوين لاسترجاعها.", c:"ransom", e:"تشفير الملفات مقابل فدية مالية هو التعريف المباشر لبرنامج الفدية." },
+  { s:"برنامج يستنسخ نفسه وينتقل بين أجهزة الشبكة الداخلية للمؤسسة دون علم أي موظف، مما يُبطئ الشبكة بالكامل خلال ساعات.", c:"worm", e:"الاستنساخ الذاتي والانتقال عبر الشبكة الداخلية دون تدخل بشري هو سلوك الدودة." },
+  { s:"لعبة مجانية حُمِّلت من موقع غير رسمي، بعد تثبيتها بدأ شخص مجهول بالتحكم في كاميرا الجهاز وملفاته عن بعد.", c:"trojan", e:"فتح قناة تحكم خفية للمخترق بعد التنكر كبرنامج عادي هو سلوك حصان طروادة." },
+];
+
+const PH2_CATS = [
+  {key:"general", label:"عام"}, {key:"spear", label:"موجّه"}, {key:"whaling", label:"مدراء"},
+  {key:"vishing", label:"صوتي"}, {key:"smishing", label:"رسائل SMS"}, {key:"quishing", label:"QR"},
+  {key:"social", label:"شبكات تواصل"}, {key:"ai", label:"ذكاء اصطناعي"}, {key:"oauth", label:"OAuth"},
+];
+const PH2_ITEMS = [
+  { s:"بريد إلكتروني جماعي يصل لآلاف المستخدمين يدّعي أنه من بنك رسمي ويطلب تحديث البيانات البنكية فورًا.", c:"general", e:"رسالة جماعية غير مخصَّصة تحاكي جهة رسمية — هذا هو التصيد العام." },
+  { s:"بريد يبدأ بـ 'مرحبًا أحمد، هذا تقرير الاجتماع الأخير...' مستخدمًا معلومات دقيقة جُمعت مسبقًا عن الشخص المستهدف.", c:"spear", e:"استهداف شخص بعينه بمعلومات مخصَّصة عنه هو التصيد الموجّه (Spear Phishing)." },
+  { s:"رسالة رسمية جدًا موجَّهة لمدير الجامعة تطلب تحويل مبلغ مالي عاجل بناءً على تعليمات مزعومة من 'الوزير'.", c:"whaling", e:"استهداف كبار المسؤولين بأسلوب رسمي ودقيق هو تصيّد المدراء (Whaling)." },
+  { s:"مكالمة هاتفية من شخص يدّعي أنه من خدمة البريد المصرفي، يطلب من الضحية كود البطاقة البنكية فورًا.", c:"vishing", e:"الاتصال الهاتفي المباشر لانتزاع معلومات حساسة هو التصيد الصوتي (Vishing)." },
+  { s:"رسالة نصية SMS تقول: 'ربحت 100,000 دج! اضغط هنا لاستلامها' مرفقة برابط غريب.", c:"smishing", e:"رسالة نصية بجائزة وهمية ورابط مزيف هي التصيد عبر الرسائل (Smishing)." },
+  { s:"رمز QR موضوع في موقف سيارات عام، عند مسحه يقود المستخدم لصفحة دفع مزيفة تطلب بيانات البطاقة.", c:"quishing", e:"إخفاء رابط مزيف خلف رمز QR هو التصيد عبر QR (Quishing)." },
+  { s:"حساب مزيف على فيسبوك يتظاهر بأنه 'الدعم الفني' الرسمي للمؤسسة ويطلب من المتابعين كلمة المرور لحل مشكلة مزعومة.", c:"social", e:"حسابات مزيفة على منصات التواصل الاجتماعي هي قناة التصيد عبر الشبكات الاجتماعية." },
+  { s:"مكالمة صوتية مطابقة تمامًا لصوت المدير العام تطلب من الموظف تحويل أموال فورًا بسبب 'صفقة عاجلة'.", c:"ai", e:"استنساخ الصوت بالذكاء الاصطناعي لتقليد شخص موثوق هو التصيد المعتمد على الذكاء الاصطناعي." },
+  { s:"نافذة منبثقة تطلب 'Login with Microsoft' ثم تطلب من المستخدم الموافقة (Allow) على منح تطبيق صلاحيات واسعة على حسابه.", c:"oauth", e:"خداع المستخدم لمنح صلاحيات وصول دون سرقة كلمة المرور مباشرة هو التصيد عبر OAuth." },
+];
+
+const SOC_ITEMS = [
+  { setup:"نشرت معلومة عن مشروع داخلي سرّي في مكان عملك على حسابك الشخصي في فيسبوك دون إذن.",
+    options:[
+      {t:"لا مشكلة، طالما لم أذكر اسم المؤسسة صراحة.", best:false, w:"حتى دون ذكر الاسم صراحة، تفاصيل كافية قد تكشف الهوية وتعرضك للمساءلة."},
+      {t:"أحذف المنشور فورًا وأراجع سياسة المؤسسة حول مشاركة المعلومات.", best:true, w:"صحيح — التحقق من سياسة الشركة قبل أي نشر يحميك من المساءلة القانونية."},
+      {t:"أتركه لأن أصدقائي فقط من يرونه.", best:false, w:"إعدادات الخصوصية لا تمنع انتشار المعلومة لاحقًا عبر إعادة المشاركة."},
+    ]},
+  { setup:"رسالة على واتساب من حساب يدّعي أنه 'الدعم الفني' لمنصة تستخدمها، يطلب كلمة المرور لحل مشكلة عاجلة.",
+    options:[
+      {t:"أرسل كلمة المرور لأن الحساب يبدو رسميًا بصورة الشعار.", best:false, w:"الصورة والاسم لا يثبتان الهوية — لا جهة رسمية تطلب كلمة المرور عبر واتساب."},
+      {t:"أتجاهل الرسالة وأتحقق من الدعم عبر القناة الرسمية المعروفة للمنصة.", best:true, w:"التحقق المستقل عبر القناة الرسمية هو الإجراء الآمن دائمًا."},
+      {t:"أرد لأسأله كيف عرف رقمي.", best:false, w:"الرد يؤكد للمهاجم أن الرقم نشط، وقد يُستخدم ذلك لاحقًا."},
+    ]},
+  { setup:"لاحظت حسابًا على لينكدإن يستخدم اسم وشعار مؤسستك ويتفاعل مع العملاء دون أن يكون مفوَّضًا رسميًا.",
+    options:[
+      {t:"أتجاهله لأنه لا يخصني شخصيًا.", best:false, w:"انتحال هوية المؤسسة يضر بسمعتها ويستحق الإبلاغ الفوري."},
+      {t:"أبلغ الجهة المسؤولة في مؤسستي عن الحساب المنتحل.", best:true, w:"الإبلاغ الفوري يحمي سمعة المؤسسة ويسمح باتخاذ إجراء رسمي ضد الانتحال."},
+      {t:"أتفاعل معه لأتأكد بنفسي أولاً.", best:false, w:"التفاعل قد يمنح الحساب المزيف مصداقية إضافية أمام الآخرين."},
+    ]},
+  { setup:"تطبيق جديد يطلب صلاحية الوصول لجهات اتصالك وموقعك الجغرافي لمجرد تعديل الصور.",
+    options:[
+      {t:"أوافق لأن أغلب التطبيقات تطلب ذلك.", best:false, w:"طلب صلاحيات لا علاقة لها بوظيفة التطبيق علامة تحذيرية واضحة."},
+      {t:"أرفض الصلاحيات غير الضرورية وأبحث عن بديل أكثر احترامًا للخصوصية.", best:true, w:"مراجعة الصلاحيات قبل الموافقة تحميك من تسريب بيانات لا داعي لمشاركتها."},
+      {t:"أوافق مؤقتًا ثم أُلغي الصلاحيات لاحقًا.", best:false, w:"بمجرد الموافقة، قد يكون التطبيق قد جمع البيانات فعلًا قبل الإلغاء."},
+    ]},
+  { setup:"صديق يشاركك مقالًا مثيرًا للجدل عن جهة عمل سابقة له، ويطلب منك إعادة نشره على حسابك الرسمي كموظف.",
+    options:[
+      {t:"أعيد نشره فورًا لدعم صديقي.", best:false, w:"ما يُنشر يمكن استخدامه ضدك أو ضد صاحب عملك الحالي، بحسب مبادئ الاستخدام المسؤول."},
+      {t:"أعتذر عن عدم النشر من حسابي المرتبط بصفتي المهنية.", best:true, w:"الفصل بين الحساب المهني والمحتوى الشخصي المثير للجدل حماية ضرورية للسمعة."},
+      {t:"أنشره من حساب مجهول الهوية.", best:false, w:"هذا لا يزال يحمل مخاطر قانونية وأخلاقية، بصرف النظر عن إخفاء الهوية."},
+    ]},
+  { setup:"لاحظت أن إعدادات الخصوصية في حسابك تسمح لأي شخص برؤية رقم هاتفك وبريدك الشخصي.",
+    options:[
+      {t:"أتركها كما هي، فلا أحد يهتم بمعلوماتي.", best:false, w:"البيانات المتاحة علنًا تُستخدم غالبًا في هجمات هندسة اجتماعية موجَّهة."},
+      {t:"أراجع إعدادات الخصوصية وأقيّد الوصول لهذه المعلومات للأصدقاء فقط.", best:true, w:"ضبط إعدادات الخصوصية بانتظام هو أحد أفضل الممارسات الأساسية للحماية."},
+      {t:"أحذف الحساب بالكامل.", best:false, w:"خطوة متطرفة غير ضرورية؛ ضبط الإعدادات كافٍ عادة لحل المشكلة."},
+    ]},
+];
+
+const DESK_ITEMS = [
+  { s:"كلمة المرور مكتوبة على ورقة لاصقة ملصوقة على حافة الشاشة.", v:true, e:"كتابة كلمات المرور ووضعها على مرأى من الجميع مخالفة مباشرة لمبدأ المكتب النظيف." },
+  { s:"الأدراج والخزائن التي تحتوي وثائق سرية مغلقة بإحكام قبل مغادرة المكتب.", v:false, e:"هذا تطبيق سليم تمامًا لمبدأ المكتب النظيف." },
+  { s:"وثيقة تحمل بيانات موظفين تُركت على درج الطابعة بعد الطباعة.", v:true, e:"المستندات المتروكة على الطابعة من أكثر بنود انتهاك أمن المعلومات شيوعًا." },
+  { s:"الوثائق السرية القديمة تُتلَف بطريقة آمنة بدل رميها في سلة المهملات العادية.", v:false, e:"إتلاف الوثائق السرية بطريقة آمنة هو أحد أفضل الممارسات الموصى بها." },
+  { s:"بطاقة الدخول تُركت على المكتب أثناء استراحة الغداء دون أي مراقبة.", v:true, e:"بطاقة الدخول من بنود انتهاك أمن المعلومات إن تُركت دون رقابة." },
+  { s:"الحاسوب يُقفَل (Ctrl+Alt+Del) قبل مغادرة المكتب ولو لدقائق قليلة.", v:false, e:"إغلاق الجهاز عند كل مغادرة، ولو قصيرة، ممارسة سليمة." },
+  { s:"وثائق متراكمة على طاولة الاجتماعات تُركت دون جمعها بعد انتهاء الاجتماع.", v:true, e:"الوثائق المتراكمة بعد الاجتماعات هي أحد المجالات التي يجب تطبيق المبدأ عليها صراحة." },
+  { s:"اللوحة البيضاء التي كُتبت عليها معلومات حساسة أثناء الاجتماع تُمسَح فور انتهائه.", v:false, e:"مسح اللوحات البيضاء بعد الاستخدام يمنع تسرب معلومات حساسة للزوار لاحقًا." },
+];
+
+const DATA_CATS = [ {key:"secret", label:"🔴 سرية"}, {key:"internal", label:"🟠 داخلية"}, {key:"public", label:"⚪ عامة"} ];
+const DATA_ITEMS = [
+  { s:"كلمات المرور وأرقام الحسابات البنكية للموظفين.", c:"secret", e:"معلومات حساسة يمكن أن تُستغل مباشرة — تُصنَّف سرية." },
+  { s:"خطط العمل السنوية والتقارير الداخلية للإدارة.", c:"internal", e:"خاصة بالمؤسسة ولا تُشارك مع الجمهور، لكنها ليست بحساسية السجلات المالية — داخلية." },
+  { s:"منشور إعلامي رسمي عن فعالية عامة للمؤسسة.", c:"public", e:"يمكن مشاركته دون أي مخاطر — بيانات عامة." },
+  { s:"السجلات الصحية الشخصية للموظفين.", c:"secret", e:"بيانات صحية شخصية حساسة جدًا — تُصنَّف سرية دائمًا." },
+  { s:"نتائج أبحاث داخلية لم تُنشر بعد رسميًا.", c:"internal", e:"معلومات خاصة بالمؤسسة قبل نشرها الرسمي — تصنَّف داخلية." },
+  { s:"كتيّب تعريفي عام عن خدمات المؤسسة موجَّه للجمهور.", c:"public", e:"مُعَد أصلًا للتوزيع العام — بيانات عامة." },
+];
+
+const TLP_ITEMS = [
+  { s:"معلومة حساسة جدًا تخص فقط الشخص المستلم، ولا يجوز مشاركتها مع أي طرف آخر مهما كان.", c:"red", e:"TLP:RED مخصص للمستلم فقط دون أي مشاركة إضافية." },
+  { s:"تقرير أمني داخلي يمكن مشاركته فقط مع من له علاقة مباشرة باتخاذ إجراء بشأنه داخل المؤسسة.", c:"amber", e:"TLP:AMBER يسمح بالمشاركة داخل المؤسسة أو مع المعنيين مباشرة بالإجراء." },
+  { s:"تحذير أمني عام يمكن تعميمه على مؤسسات أخرى ضمن نفس القطاع أو المجتمع الأمني.", c:"green", e:"TLP:GREEN يسمح بالمشاركة مع أطراف ضمن نفس القطاع أو المجتمع الأمني." },
+  { s:"بيان صحفي أو منشور عام لا توجد أي قيود على تداوله.", c:"white", e:"TLP:WHITE يعني معلومة غير محدودة التداول." },
+];
+const TLP_CATS = [ {key:"red", label:"🔴 أحمر"}, {key:"amber", label:"🟠 برتقالي"}, {key:"green", label:"🟢 أخضر"}, {key:"white", label:"⚪ أبيض"} ];
+
+/* ============ STATE ============ */
+const KEY = "cyberSimPlatform2_v1";
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const p = JSON.parse(raw);
+      return { mal:p.mal||{}, ph2:p.ph2||{}, soc:p.soc||{}, desk:p.desk||{}, data:p.data||{}, tlp:p.tlp||{} };
+    }
+  }catch(e){}
+  return { mal:{}, ph2:{}, soc:{}, desk:{}, data:{}, tlp:{} };
+}
+function saveState(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+let state = loadState();
+let malIdx=0, ph2Idx=0, socIdx=0, deskIdx=0, dataIdx=0, tlpIdx=0;
+
+/* ============ TABS ============ */
+document.querySelectorAll('nav.tabs button').forEach(btn=>{ btn.addEventListener('click', ()=> switchTab(btn.dataset.tab)); });
+document.querySelectorAll('[data-goto]').forEach(btn=>{ btn.addEventListener('click', ()=> switchTab(btn.dataset.goto)); });
+function switchTab(tab){
+  document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.panel').forEach(p=> p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  document.getElementById('contentScroll').scrollTop = 0;
+  if(tab==='results') renderResults();
+}
+
+/* ============ EXPLAIN TOGGLES ============ */
+function wireToggle(btnId, gridId){
+  const btn = document.getElementById(btnId), grid = document.getElementById(gridId);
+  btn.addEventListener('click', ()=>{
+    grid.classList.toggle('open'); btn.classList.toggle('open');
+  });
+}
+wireToggle('malToggle','malGrid');
+wireToggle('ph2Toggle','ph2Grid');
+wireToggle('dataToggle','dataGrid');
+
+/* ============ GENERIC CLASSIFY ENGINE ============ */
+function renderClassify(cfg){
+  const { items, cats, idx, stateKey, stageId, counterId, progressId, nextLabel, iconPrefix } = cfg;
+  const item = items[idx.v];
+  const answered = state[stateKey][idx.v];
+  document.getElementById(counterId).textContent = (idx.v+1)+" / "+items.length;
+  document.getElementById(progressId).style.width = (Object.keys(state[stateKey]).length/items.length*100)+"%";
+  document.getElementById(stageId).innerHTML = `
+    <div class="scn-setup">${iconPrefix||"🖥️"} ${item.s}</div>
+    <div class="cat-row" id="${stageId}_cats">${cats.map(c=>`<button class="cat-btn" data-k="${c.key}">${c.label}</button>`).join("")}</div>
+    <div class="feedback" id="${stageId}_fb"></div>
+    <div class="nextbar"><button class="next-btn" id="${stageId}_next">${idx.v<items.length-1 ? nextLabel : "عرض النتائج ←"}</button></div>
+  `;
+  function apply(picked){
+    document.querySelectorAll('#'+stageId+'_cats .cat-btn').forEach(b=>{
+      b.disabled = true;
+      if(b.dataset.k===picked) b.classList.add(picked===item.c ? "correct-pick":"wrong-pick");
+    });
+    const ok = picked===item.c;
+    const box = document.getElementById(stageId+'_fb');
+    box.className = "feedback show " + (ok?"correct":"wrong");
+    const correctLabel = cats.find(c=>c.key===item.c).label;
+    box.innerHTML = `<span class="tag">${ok?"✔ تصنيف صحيح":"✘ التصنيف الصحيح: "+correctLabel}</span>${item.e}`;
+    document.getElementById(stageId+'_next').classList.add('show');
+    document.getElementById(progressId).style.width = (Object.keys(state[stateKey]).length/items.length*100)+"%";
+  }
+  if(answered) apply(answered.picked);
+  document.querySelectorAll('#'+stageId+'_cats .cat-btn').forEach(b=>{
+    b.onclick = ()=>{
+      if(state[stateKey][idx.v]) return;
+      const k = b.dataset.k;
+      state[stateKey][idx.v] = { picked:k, correct:k===item.c };
+      saveState(); apply(k); updateHomeStats();
+    };
+  });
+  document.getElementById(stageId+'_next').onclick = ()=>{
+    if(idx.v < items.length-1){ idx.v++; cfg.render(); } else switchTab('results');
+  };
+}
+
+const malIdxObj = { v:0 };
+function renderMal(){ renderClassify({ items:MAL_ITEMS, cats:MAL_CATS, idx:malIdxObj, stateKey:'mal', stageId:'malStage', counterId:'malCounter', progressId:'malProgress', nextLabel:'الحالة التالية ←', render:renderMal }); }
+
+const ph2IdxObj = { v:0 };
+function renderPh2(){ renderClassify({ items:PH2_ITEMS, cats:PH2_CATS, idx:ph2IdxObj, stateKey:'ph2', stageId:'ph2Stage', counterId:'ph2Counter', progressId:'ph2Progress', nextLabel:'الموقف التالي ←', render:renderPh2 }); }
+
+const deskIdxObj = { v:0 };
+const DESK_CATS = [ {key:"violation", label:"🚫 مخالفة"}, {key:"ok", label:"✅ التزام"} ];
+function renderDesk(){
+  const items = DESK_ITEMS.map(d=>({ s:d.s, c:d.v?"violation":"ok", e:d.e }));
+  renderClassify({ items, cats:DESK_CATS, idx:deskIdxObj, stateKey:'desk', stageId:'deskStage', counterId:'deskCounter', progressId:'deskProgress', nextLabel:'الحالة التالية ←', render:renderDesk, iconPrefix:"🗄️" });
+}
+
+const dataIdxObj = { v:0 };
+function renderDataC(){ renderClassify({ items:DATA_ITEMS, cats:DATA_CATS, idx:dataIdxObj, stateKey:'data', stageId:'dataStage', counterId:'dataCounter', progressId:'dataProgress', nextLabel:'البيانة التالية ←', render:renderDataC, iconPrefix:"📄" }); }
+
+const tlpIdxObj = { v:0 };
+function renderTlp(){ renderClassify({ items:TLP_ITEMS, cats:TLP_CATS, idx:tlpIdxObj, stateKey:'tlp', stageId:'tlpStage', counterId:'tlpCounter', progressId:'tlpProgress', nextLabel:'التالي ←', render:renderTlp, iconPrefix:"🚦" }); }
+
+/* ============ SOCIAL ENGINEERING-STYLE (best choice) ENGINE for social module ============ */
+function renderSoc(){
+  const item = SOC_ITEMS[socIdx];
+  const answered = state.soc[socIdx];
+  document.getElementById('socCounter').textContent = (socIdx+1)+" / "+SOC_ITEMS.length;
+  document.getElementById('socProgress').style.width = (Object.keys(state.soc).length/SOC_ITEMS.length*100)+"%";
+  const letters = ["أ","ب","ج"];
+  document.getElementById('socStage').innerHTML = `
+    <div class="scn-setup">📱 ${item.setup}</div>
+    <div class="cat-row" style="flex-direction:column;" id="socOpts">
+      ${item.options.map((o,i)=>`<button class="cat-btn" style="text-align:right;flex:none;" data-i="${i}"><span class="mono" style="color:var(--amber);margin-left:6px;">${letters[i]}</span>${o.t}</button>`).join("")}
+    </div>
+    <div class="feedback" id="socFb"></div>
+    <div class="nextbar"><button class="next-btn" id="socNext">${socIdx<SOC_ITEMS.length-1 ? "الموقف التالي ←" : "عرض النتائج ←"}</button></div>
+  `;
+  function apply(i){
+    document.querySelectorAll('#socOpts .cat-btn').forEach((b,idx2)=>{
+      b.disabled = true;
+      if(idx2===i) b.classList.add(item.options[i].best ? "correct-pick":"wrong-pick");
+    });
+    const chosen = item.options[i];
+    const box = document.getElementById('socFb');
+    box.className = "feedback show " + (chosen.best?"correct":"wrong");
+    box.innerHTML = `<span class="tag">${chosen.best?"✔ هذا هو الخيار الأنسب":"✘ هناك خيار أنسب"}</span>${chosen.w}`;
+    document.getElementById('socNext').classList.add('show');
+    document.getElementById('socProgress').style.width = (Object.keys(state.soc).length/SOC_ITEMS.length*100)+"%";
+  }
+  if(answered) apply(answered.picked);
+  document.querySelectorAll('#socOpts .cat-btn').forEach(b=>{
+    b.onclick = ()=>{
+      if(state.soc[socIdx]) return;
+      const i = +b.dataset.i;
+      state.soc[socIdx] = { picked:i, correct:item.options[i].best };
+      saveState(); apply(i); updateHomeStats();
+    };
+  });
+  document.getElementById('socNext').onclick = ()=>{
+    if(socIdx < SOC_ITEMS.length-1){ socIdx++; renderSoc(); } else switchTab('results');
+  };
+}
+
+/* ============ RESULTS / GAUGE ============ */
+function scoreOf(stateKey, total, correctField){
+  const answered = Object.values(state[stateKey]);
+  const correctCount = answered.filter(a=>a[correctField]).length;
+  return { score: answered.length ? Math.round(correctCount/total*100) : 0, done: answered.length };
+}
+function computeScores(){
+  const mal = scoreOf('mal', MAL_ITEMS.length, 'correct');
+  const ph2 = scoreOf('ph2', PH2_ITEMS.length, 'correct');
+  const soc = scoreOf('soc', SOC_ITEMS.length, 'correct');
+  const desk = scoreOf('desk', DESK_ITEMS.length, 'correct');
+  const data = scoreOf('data', DATA_ITEMS.length, 'correct');
+  const tlp = scoreOf('tlp', TLP_ITEMS.length, 'correct');
+  const parts = [mal,ph2,soc,desk,data,tlp].filter(x=>x.done>0).map(x=>x.score);
+  const overallFinal = parts.length ? Math.round(parts.reduce((a,b)=>a+b,0)/parts.length) : 0;
+  return { mal, ph2, soc, desk, data, tlp, overallFinal };
+}
+function setGauge(el, numEl, pct){
+  const c = 235; el.style.strokeDashoffset = c - (c*pct/100); numEl.textContent = pct+"%";
+}
+function updateHomeStats(){
+  const s = computeScores();
+  document.getElementById('statMal').textContent = s.mal.done+"/"+MAL_ITEMS.length;
+  document.getElementById('statPh2').textContent = s.ph2.done+"/"+PH2_ITEMS.length;
+  document.getElementById('statSoc2').textContent = s.soc.done+"/"+SOC_ITEMS.length;
+  document.getElementById('statDesk').textContent = s.desk.done+"/"+DESK_ITEMS.length;
+  document.getElementById('statData').textContent = (s.data.done+s.tlp.done)+"/"+(DATA_ITEMS.length+TLP_ITEMS.length);
+  setGauge(document.getElementById('gaugeArc'), document.getElementById('homeGaugeNum'), s.overallFinal);
+}
+function renderResults(){
+  const s = computeScores();
+  setGauge(document.getElementById('gaugeArc2'), document.getElementById('resGaugeNum'), s.overallFinal);
+  document.getElementById('barMal').style.width = s.mal.score+"%"; document.getElementById('barMalVal').textContent = s.mal.score+"%";
+  document.getElementById('barPh2').style.width = s.ph2.score+"%"; document.getElementById('barPh2Val').textContent = s.ph2.score+"%";
+  document.getElementById('barSoc2').style.width = s.soc.score+"%"; document.getElementById('barSoc2Val').textContent = s.soc.score+"%";
+  document.getElementById('barDesk').style.width = s.desk.score+"%"; document.getElementById('barDeskVal').textContent = s.desk.score+"%";
+  document.getElementById('barData').style.width = s.data.score+"%"; document.getElementById('barDataVal').textContent = s.data.score+"%";
+  document.getElementById('barTlp').style.width = s.tlp.score+"%"; document.getElementById('barTlpVal').textContent = s.tlp.score+"%";
+  const totalDone = s.mal.done+s.ph2.done+s.soc.done+s.desk.done+s.data.done+s.tlp.done;
+  const totalAll = MAL_ITEMS.length+PH2_ITEMS.length+SOC_ITEMS.length+DESK_ITEMS.length+DATA_ITEMS.length+TLP_ITEMS.length;
+  let msg = "ابدأ بإحدى الوحدات لبناء مؤشرك";
+  if(totalDone>0 && totalDone<totalAll) msg = "استمر — لم تكتمل كل الوحدات بعد";
+  if(totalDone===totalAll) msg = s.overallFinal>=80 ? "ممتاز! يقظتك السيبرانية عالية 🎯" : "أنهيت كل الوحدات — راجع النقاط التي فاتتك مع المكوِّن";
+  document.getElementById('resMsg').textContent = msg;
+}
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm("سيتم مسح كل نتائجك الحالية والبدء من جديد. متابعة؟")){
+    localStorage.removeItem(KEY);
+    state = { mal:{}, ph2:{}, soc:{}, desk:{}, data:{}, tlp:{} };
+    malIdxObj.v=0; ph2IdxObj.v=0; socIdx=0; deskIdxObj.v=0; dataIdxObj.v=0; tlpIdxObj.v=0;
+    renderMal(); renderPh2(); renderSoc(); renderDesk(); renderDataC(); renderTlp();
+    updateHomeStats(); renderResults(); switchTab('home');
+  }
+});
+
+/* ============ INIT ============ */
+renderMal(); renderPh2(); renderSoc(); renderDesk(); renderDataC(); renderTlp();
+updateHomeStats();
+</script>
+</body>
+</html>
